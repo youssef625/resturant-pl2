@@ -8,8 +8,11 @@ public class db {
     private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=res";
     private static final String USER = "<username>>";
     private static final String PASSWORD = "<password>";
-
-    public Connection connect() {
+    private static Connection instance = null;
+    public  Connection connect() {
+        if (instance != null) {
+            return instance;
+        }
         Connection connection = null;
         try {
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -18,6 +21,7 @@ public class db {
             System.err.println("Failed to connect to MSSQL database.");
             e.printStackTrace();
         }
-        return connection;
+        instance = connection;
+        return instance;
     }
 }
