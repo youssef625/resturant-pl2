@@ -31,8 +31,11 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+
 ### VS Code ###
 .vscode/
 
 ### Mac OS ###
 .DS_Store
+
+src/main/java/classes/db.java

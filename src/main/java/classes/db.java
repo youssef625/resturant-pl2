@@ -1,15 +1,15 @@
-package database;
+package classes;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class db {
-    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=res";
-    private static final String USER = "<username>>";
-    private static final String PASSWORD = "<password>";
+    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=res;trustServerCertificate=true;loginTimeout=30";
+    private static final String USER = "sa";
+    private static final String PASSWORD = "P@ssw0rd";
     private static Connection instance = null;
-    public  Connection connect() {
+    public static   Connection connect() {
         if (instance != null) {
             return instance;
         }
@@ -22,6 +22,11 @@ public class db {
             e.printStackTrace();
         }
         instance = connection;
+
         return instance;
     }
+
+
+
+
 }
