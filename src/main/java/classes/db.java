@@ -7,10 +7,10 @@ import java.sql.SQLException;
 public class db {
     private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=res;trustServerCertificate=true;loginTimeout=30";
     private static final String USER = "sa";
-    private static final String PASSWORD = "P@ssw0rd";
+    private static final String PASSWORD = "";
     private static Connection instance = null;
-    public static   Connection connect() {
-        if (instance != null) {
+    public static   Connection connect() throws SQLException {
+        if (instance != null && !instance.isClosed()) {
             return instance;
         }
         Connection connection = null;

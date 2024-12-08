@@ -1,9 +1,11 @@
 package classes;
 
+import java.util.List;
+
 public interface MealsManagement {
-    void addMeal(int id, String name, String type, double price);
-    void deleteMeal(int id);
-    void updateMeal();
-    void listMeals();
-    void searchMeal();
+    boolean addMeal(meal _meal);
+    boolean deleteMeal(int id);
+    boolean updateMeal(meal _meal);
+    List<meal> listMeals();
+    List<meal> searchMeal(String name);
 }

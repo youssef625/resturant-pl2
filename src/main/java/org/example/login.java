@@ -11,7 +11,7 @@ import java.util.Base64;
 import classes.*;
 
 public class login {
-    private static String hashPassword(String password) throws NoSuchAlgorithmException {
+    static String hashPassword(String password) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] hashedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));
         return Base64.getEncoder().encodeToString(hashedPassword);

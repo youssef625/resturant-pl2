@@ -6,6 +6,7 @@ public class users {
    protected int id;
     protected String name;
     protected String type;
+    private String password;
 
     public String getName(){
         return name;
@@ -13,7 +14,8 @@ public class users {
     public int getId(){
         return id;
     }
-    public boolean updateMyPassword(String password ){
+    public boolean updateMyPassword(String _password ){
+
 
        return true;
     }
@@ -32,5 +34,13 @@ public class users {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

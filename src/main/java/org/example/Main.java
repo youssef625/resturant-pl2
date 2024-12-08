@@ -30,15 +30,22 @@ public class Main {
             System.out.println("Error: "+e);
             return;
         }
-        while (true){
+        while (true) {
             Scanner scanner = new Scanner(System.in);
             System.out.println("choose your role: ");
             System.out.println("1. Admin");
             System.out.println("2. Employee");
             System.out.println("3. Customer");
             System.out.println("4. Exit");
-            int role = scanner.nextInt();
-            switch (role){
+            int role;
+            try {
+                role = scanner.nextInt();
+            } catch (Exception e) {
+                System.out.println("Invalid choice");
+                continue;
+            }
+
+            switch (role) {
                 case 1:
                     flush();
                     scanner = null;
