@@ -1,6 +1,8 @@
 package classes;
 
+
 import org.example.login;
+
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -54,8 +56,9 @@ public class Employee extends users implements CustomersManagement {
     }
 
     @Override
-    public void listCustomers() {
-        // Not implemented yet
+    public List<users> listCustomers() {
+
+        return null;
     }
 
     @Override
