@@ -1,5 +1,9 @@
 package classes;
 
+import org.example.login;
+
+import javax.management.Query;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,7 +24,7 @@ public class adminstrator extends users implements MealsManagement, EmployeesMan
 
     @Override
     public boolean addMeal(meal _meal) {
-        String query = "INSERT INTO meals ( name, price, discount) VALUES ( ?, ?, ?)";
+        String query = "INSERT INTO  ( name, price, discount) VALUES ( ?, ?, ?)";
         try (Connection connection = db.connect();
              PreparedStatement statement = connection.prepareStatement(query)) {
             //statement.setInt(1, _meal.mealId);
@@ -102,12 +106,39 @@ return false;
     }
     @Override
     public boolean addEmp(users _user) {
+        try {
+            String password = login.hashPassword(_user.getPassword());
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
+        String query = "INSERT INTO users (name, type , password) VALUES (?, ? , ?)";
+        try (Connection connection = db.connect();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, _user.getName());
+            statement.setString(2, _user.getType());
+            statement.setString(3, _user.getPassword());
+            statement.executeUpdate();
+            System.out.println("Employee added: " + _user.getName());
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         return false;
     }
 
     @Override
     public boolean deleteEmp(int id) {
+        String query = "DELETE FROM users WHERE id = ?";
+        try (Connection connection = db.connect();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            statement.executeUpdate();
+            System.out.println("Employee deleted: " + id);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();}
         return false;
     }
 

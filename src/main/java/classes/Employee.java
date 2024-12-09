@@ -1,5 +1,7 @@
 package classes;
 
+import java.util.List;
+
 public class Employee extends users implements CustomersManagement{
 
 
@@ -20,8 +22,9 @@ public class Employee extends users implements CustomersManagement{
     }
 
     @Override
-    public void listCustomers() {
+    public List<users> listCustomers() {
 
+        return null;
     }
 
     @Override
