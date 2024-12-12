@@ -7,5 +7,5 @@ public interface CustomersManagement {
     void deleteCustomers(int id);
     void updateCustomers(int id, String name);
     List<users> listCustomers();
-    void searchCustomers(String name);
+    List<users> searchCustomers(String name);
 }
