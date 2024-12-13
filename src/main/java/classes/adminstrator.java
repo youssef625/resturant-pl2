@@ -17,17 +17,36 @@ public class adminstrator extends users implements MealsManagement, EmployeesMan
         id = user.getId();
         name = user.getName();
         type = user.getType();
-
     }
 
 
 
     @Override
+    public meal getMeal(int id) {
+        String query = "SELECT mealId, name, price, discount FROM meals WHERE mealId = ?";
+        try (Connection connection = db.connect();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    meal _meal = new meal();
+                    _meal.mealId = resultSet.getInt("mealId");
+                    _meal.mealName = resultSet.getString("name");
+                    _meal.mealPrice = resultSet.getFloat("price");
+                    _meal.discount = resultSet.getFloat("discount");
+                    return _meal;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    @Override
     public boolean addMeal(meal _meal) {
         String query = "INSERT INTO  ( name, price, discount) VALUES ( ?, ?, ?)";
         try (Connection connection = db.connect();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            //statement.setInt(1, _meal.mealId);
             statement.setString(1, _meal.mealName);
             statement.setFloat(2, _meal.mealPrice);
             statement.setFloat(3, _meal.discount);
@@ -57,8 +76,20 @@ public class adminstrator extends users implements MealsManagement, EmployeesMan
 
     @Override
     public boolean updateMeal(meal _meal) {
-return false;
-
+        String query = "UPDATE meals SET name = ?, price = ?, discount = ? WHERE mealId = ?";
+        try (Connection connection = db.connect();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, _meal.mealName);
+            statement.setFloat(2, _meal.mealPrice);
+            statement.setFloat(3, _meal.discount);
+            statement.setInt(4, _meal.mealId);
+            statement.executeUpdate();
+            System.out.println("Meal updated: " + _meal.mealName);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+           return false;
+        }
     }
 
     @Override
@@ -105,6 +136,26 @@ return false;
         return meals;
     }
     @Override
+    public users getEmp(int id) {
+        String query = "SELECT id, name, type FROM users WHERE id = ?";
+        try (Connection connection = db.connect();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    users user = new users();
+                    user.setId(resultSet.getInt("id"));
+                    user.setName(resultSet.getString("name"));
+                    user.setType(userTypes.valueOf( resultSet.getString("type")));
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    @Override
     public boolean addEmp(users _user) {
         try {
             String password = login.hashPassword(_user.getPassword());
@@ -116,7 +167,7 @@ return false;
         try (Connection connection = db.connect();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, _user.getName());
-            statement.setString(2, _user.getType());
+            statement.setString(2, _user.getType().name());
             statement.setString(3, _user.getPassword());
             statement.executeUpdate();
             System.out.println("Employee added: " + _user.getName());
@@ -144,6 +195,18 @@ return false;
 
     @Override
     public boolean updateEmp(users _user) {
+        String query = "UPDATE users SET name = ?, type = ? WHERE id = ?";
+        try (Connection connection = db.connect();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, _user.getName());
+            statement.setString(2, _user.getType().name());
+            statement.setInt(3, _user.getId());
+            statement.executeUpdate();
+            System.out.println("Employee updated: " + _user.getName());
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
@@ -158,7 +221,7 @@ return false;
                 users user = new users();
                 user.setId(resultSet.getInt("id"));
                 user.setName(resultSet.getString("name"));
-                user.setType(resultSet.getString("type"));
+                user.setType(userTypes.valueOf( resultSet.getString("type")));
                 users.add(user);
             }
         } catch (SQLException e) {
@@ -181,12 +244,16 @@ return false;
                     users user = new users();
                     user.setId(resultSet.getInt("id"));
                     user.setName(resultSet.getString("name"));
-                    user.setType(resultSet.getString("type"));
+                    user.setType(userTypes.valueOf( resultSet.getString("type")));
                     users.add(user);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
             return users;
+    }
+
+    public void generateReport(userTypes type , int id) {
+
     }
 }

@@ -22,7 +22,7 @@ public class login {
             String username = System.console().readLine();
             System.out.println("Enter your password: ");
             String password = System.console().readLine();
-            if (authenticate(username, password ,user) && user.getType().equals(type)) {
+            if (authenticate(username, password ,user) && user.getType().name().equals(type)) {
                 return true;
             }
             else {
@@ -42,7 +42,7 @@ public class login {
                 if (resultSet.next()) {
                    user.setId(resultSet.getInt("id"));
                    user.setName(resultSet.getString("name"));
-                   user.setType(resultSet.getString("type"));
+                   user.setType(userTypes.valueOf( resultSet.getString("type")));
                     System.out.print("\033[H\033[2J");
                     System.out.flush();
                    return true;

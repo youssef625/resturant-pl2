@@ -8,4 +8,5 @@ public interface MealsManagement {
     boolean updateMeal(meal _meal);
     List<meal> listMeals();
     List<meal> searchMeal(String name);
+    meal getMeal(int id);
 }

@@ -5,6 +5,7 @@ public class meal {
     public String mealName;
     public float mealPrice;
     public float discount;
+
     public boolean setDiscount(){
         return true;
     }

@@ -8,4 +8,5 @@ public interface EmployeesManagement {
    boolean updateEmp( users _user);
    List<users> listEmps();
    List<users> searchEmp(String name);
+   users getEmp(int id);
 }
