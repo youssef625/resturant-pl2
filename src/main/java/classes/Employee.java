@@ -157,7 +157,6 @@ public class Employee extends users implements CustomersManagement {
     }
 
 
-
     public void checkOffers() {
         String fetchOffersQuery = "SELECT id, description, discount, valid_until FROM Offers WHERE valid_until >= GETDATE()";
 
@@ -191,18 +190,45 @@ public class Employee extends users implements CustomersManagement {
             e.printStackTrace();
         }
     }
-    public void makeOrder(int customerId, String orderDetails, double totalPrice) {
-        String insertOrderQuery = "INSERT INTO Orders (customer_id, order_details, total_price, order_date) VALUES (?, ?, ?, GETDATE())";
 
+    public void makeOrder(int customerId, String orderDetails, double totalPrice) {
+
+        String checkCustomerQuery = "SELECT id FROM Customers WHERE id = ?";
+        try (Connection connection = db.connect();
+             PreparedStatement checkStmt = connection.prepareStatement(checkCustomerQuery)) {
+
+            checkStmt.setInt(1, customerId);
+            try (ResultSet resultSet = checkStmt.executeQuery()) {
+                if (!resultSet.next()) {
+                    System.out.println("Error: Customer with ID " + customerId + " does not exist.");
+                    return;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL Error: Could not verify customer.");
+            e.printStackTrace();
+            return;
+        }
+
+        // Order Details
+        if (orderDetails == null || orderDetails.trim().isEmpty()) {
+            System.out.println("Error: Order details cannot be empty.");
+            return;
+        }
+        if (totalPrice <= 0) {
+            System.out.println("Error: Total price must be greater than 0.");
+            return;
+        }
+
+        // Insert Order
+        String insertOrderQuery = "INSERT INTO Orders (customer_id, order_details, total_price, order_date) VALUES (?, ?, ?, GETDATE())";
         try (Connection connection = db.connect();
              PreparedStatement orderStmt = connection.prepareStatement(insertOrderQuery)) {
 
-            // Set the parameters for the order
             orderStmt.setInt(1, customerId);
             orderStmt.setString(2, orderDetails);
             orderStmt.setDouble(3, totalPrice);
 
-            // Execute the insertion
             int rowsAffected = orderStmt.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Order placed successfully for Customer ID: " + customerId);
@@ -216,21 +242,38 @@ public class Employee extends users implements CustomersManagement {
         }
     }
 
-    public void cancelOrder(int orderId) {
-        String deleteOrderQuery = "DELETE FROM Orders WHERE id = ?";
 
+    public void cancelOrder(int orderId) {
+        // Step 1: Validate Order ID
+        String checkOrderQuery = "SELECT id FROM Orders WHERE id = ?";
+        try (Connection connection = db.connect();
+             PreparedStatement checkStmt = connection.prepareStatement(checkOrderQuery)) {
+
+            checkStmt.setInt(1, orderId);
+            try (ResultSet resultSet = checkStmt.executeQuery()) {
+                if (!resultSet.next()) {
+                    System.out.println("Error: Order with ID " + orderId + " does not exist.");
+                    return;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL Error: Could not verify order.");
+            e.printStackTrace();
+            return;
+        }
+
+        // Step 2: Cancel the Order
+        String deleteOrderQuery = "DELETE FROM Orders WHERE id = ?";
         try (Connection connection = db.connect();
              PreparedStatement cancelStmt = connection.prepareStatement(deleteOrderQuery)) {
 
-            // Set the ID parameter
             cancelStmt.setInt(1, orderId);
 
-            // Execute the deletion
             int rowsAffected = cancelStmt.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Order canceled successfully with ID: " + orderId);
             } else {
-                System.out.println("No order found with ID: " + orderId);
+                System.out.println("Failed to cancel the order with ID: " + orderId);
             }
 
         } catch (SQLException e) {
@@ -238,10 +281,4 @@ public class Employee extends users implements CustomersManagement {
             e.printStackTrace();
         }
     }
-
-
-
-
-
-
 }
