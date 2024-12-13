@@ -6,15 +6,17 @@ import org.example.login;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Employee extends users implements CustomersManagement {
 
     @Override
-    public boolean addCustomers(users customer) { // تعديل التوقيع ليُرجع Boolean
+    public boolean addCustomers(users customer) {
         String password = " ";
         String insertQuery = "INSERT INTO Customers (name, password) VALUES (?, ?)";
 
@@ -27,7 +29,7 @@ public class Employee extends users implements CustomersManagement {
             } catch (NoSuchAlgorithmException e) {
                 System.err.println("Error: Hashing algorithm not found!");
                 e.printStackTrace();
-                return false; // إرجاع false عند حدوث خطأ في التشفير
+                return false;
             }
 
             // Set the parameters
@@ -37,41 +39,180 @@ public class Employee extends users implements CustomersManagement {
             // Execute the insertion
             insertStmt.executeUpdate();
             System.out.println("Customer added successfully: " + customer.getName());
-            return true; // إرجاع true عند نجاح العملية
+            return true;
 
         } catch (SQLException e) {
             System.err.println("SQL Error: Could not add customer!");
             e.printStackTrace();
-            return false; // إرجاع false عند حدوث خطأ في قاعدة البيانات
+            return false;
         }
     }
 
     @Override
     public void deleteCustomers(int id) {
-        // Not implemented yet
+        String deleteQuery = "DELETE FROM Customers WHERE id = ?";
+
+        try (Connection connection = db.connect();
+             PreparedStatement deleteStmt = connection.prepareStatement(deleteQuery)) {
+
+            // Set the ID parameter
+            deleteStmt.setInt(1, id);
+
+            // Execute the deletion
+            int rowsAffected = deleteStmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Customer deleted successfully with ID: " + id);
+            } else {
+                System.out.println("No customer found with ID: " + id);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("SQL Error: Could not delete customer!");
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void updateCustomers(int id, String name) {
-        // Not implemented yet
+        String updateQuery = "UPDATE Customers SET name = ? WHERE id = ?";
+
+        try (Connection connection = db.connect();
+             PreparedStatement updateStmt = connection.prepareStatement(updateQuery)) {
+
+            // Set the parameters for the query
+            updateStmt.setString(1, name);
+            updateStmt.setInt(2, id);
+
+            // Execute the update
+            int rowsAffected = updateStmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Customer updated successfully. ID: " + id + ", New Name: " + name);
+            } else {
+                System.out.println("No customer found with ID: " + id);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("SQL Error: Could not update customer!");
+            e.printStackTrace();
+        }
     }
+
 
     @Override
     public List<users> listCustomers() {
+        String selectQuery = "SELECT id, name FROM Customers";
+        List<users> customersList = new ArrayList<>();
 
-        return null;
+        try (Connection connection = db.connect();
+             PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+             ResultSet resultSet = selectStmt.executeQuery()) {
+
+            // Loop through the result set
+            while (resultSet.next()) {
+                users customer = new users();
+                customer.setId(resultSet.getInt("id"));
+                customer.setName(resultSet.getString("name"));
+                customersList.add(customer);
+            }
+
+            System.out.println("List of customers retrieved successfully.");
+        } catch (SQLException e) {
+            System.err.println("SQL Error: Could not retrieve customer list!");
+            e.printStackTrace();
+        }
+
+        return customersList;
     }
+
 
     @Override
-    public void searchCustomers(String name) {
-        // Not implemented yet
+    public List<users> searchCustomers(String name) {
+        String searchQuery = "SELECT id, name FROM Customers WHERE name LIKE ?";
+        List<users> customersList = new ArrayList<>();
+
+        try (Connection connection = db.connect();
+             PreparedStatement searchStmt = connection.prepareStatement(searchQuery)) {
+
+            // Set the search parameter
+            searchStmt.setString(1, "%" + name + "%");
+
+            // Execute the query
+            ResultSet resultSet = searchStmt.executeQuery();
+
+            // Loop through the results
+            while (resultSet.next()) {
+                users customer = new users();
+                customer.setId(resultSet.getInt("id"));
+                customer.setName(resultSet.getString("name"));
+                customersList.add(customer);
+            }
+
+            System.out.println("Search completed successfully.");
+        } catch (SQLException e) {
+            System.err.println("SQL Error: Could not search customers!");
+            e.printStackTrace();
+        }
+
+        return customersList;
     }
 
-    public void makepayment() {
-        // Not implemented yet
+    public void makepayment(int customerId, double amount) {
+        String insertPaymentQuery = "INSERT INTO Payments (customer_id, amount, payment_date) VALUES (?, ?, GETDATE())";
+
+        try (Connection connection = db.connect();
+             PreparedStatement paymentStmt = connection.prepareStatement(insertPaymentQuery)) {
+
+            // Set the parameters
+            paymentStmt.setInt(1, customerId);
+            paymentStmt.setDouble(2, amount);
+
+            // Execute the insertion
+            int rowsAffected = paymentStmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Payment recorded successfully for customer ID: " + customerId);
+            } else {
+                System.out.println("Failed to record payment for customer ID: " + customerId);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("SQL Error: Could not record payment!");
+            e.printStackTrace();
+        }
     }
 
-    void checkOffers() {
-        // Not implemented yet
+
+    public void checkOffers() {
+        String fetchOffersQuery = "SELECT id, description, discount, valid_until FROM Offers WHERE valid_until >= GETDATE()";
+
+        try (Connection connection = db.connect();
+             PreparedStatement offersStmt = connection.prepareStatement(fetchOffersQuery);
+             ResultSet resultSet = offersStmt.executeQuery()) {
+
+            System.out.println("Available Offers:");
+            boolean hasOffers = false;
+
+            while (resultSet.next()) {
+                hasOffers = true;
+                int id = resultSet.getInt("id");
+                String description = resultSet.getString("description");
+                double discount = resultSet.getDouble("discount");
+                String validUntil = resultSet.getString("valid_until");
+
+                System.out.println("Offer ID: " + id);
+                System.out.println("Description: " + description);
+                System.out.println("Discount: " + discount + "%");
+                System.out.println("Valid Until: " + validUntil);
+                System.out.println("----------------------------");
+            }
+
+            if (!hasOffers) {
+                System.out.println("No offers are currently available.");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("SQL Error: Could not retrieve offers!");
+            e.printStackTrace();
+        }
     }
+
 }
