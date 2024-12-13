@@ -14,7 +14,7 @@ public class adminPortal {
 
     void adminLogin() throws NoSuchAlgorithmException {
         users user = new users();
-        login.isAuthentic(user , "admin");
+        login.isAuthentic(user , userTypes.admin);
         admin = new adminstrator(user);
 
     }

@@ -16,13 +16,13 @@ public class login {
         byte[] hashedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));
         return Base64.getEncoder().encodeToString(hashedPassword);
     }
-    public static boolean isAuthentic(users user , String type) throws NoSuchAlgorithmException {
+    public static boolean isAuthentic(users user , userTypes type) throws NoSuchAlgorithmException {
         for (int i = 0; i < 3; i++) {
             System.out.println("Enter your username: ");
             String username = System.console().readLine();
             System.out.println("Enter your password: ");
             String password = System.console().readLine();
-            if (authenticate(username, password ,user) && user.getType().name().equals(type)) {
+            if (authenticate(username, password ,user) && user.getType() == type ) {
                 return true;
             }
             else {
