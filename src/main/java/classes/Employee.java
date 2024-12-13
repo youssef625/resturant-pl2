@@ -156,29 +156,6 @@ public class Employee extends users implements CustomersManagement {
         return customersList;
     }
 
-    public void makepayment(int customerId, double amount) {
-        String insertPaymentQuery = "INSERT INTO Payments (customer_id, amount, payment_date) VALUES (?, ?, GETDATE())";
-
-        try (Connection connection = db.connect();
-             PreparedStatement paymentStmt = connection.prepareStatement(insertPaymentQuery)) {
-
-            // Set the parameters
-            paymentStmt.setInt(1, customerId);
-            paymentStmt.setDouble(2, amount);
-
-            // Execute the insertion
-            int rowsAffected = paymentStmt.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("Payment recorded successfully for customer ID: " + customerId);
-            } else {
-                System.out.println("Failed to record payment for customer ID: " + customerId);
-            }
-
-        } catch (SQLException e) {
-            System.err.println("SQL Error: Could not record payment!");
-            e.printStackTrace();
-        }
-    }
 
 
     public void checkOffers() {
@@ -214,5 +191,57 @@ public class Employee extends users implements CustomersManagement {
             e.printStackTrace();
         }
     }
+    public void makeOrder(int customerId, String orderDetails, double totalPrice) {
+        String insertOrderQuery = "INSERT INTO Orders (customer_id, order_details, total_price, order_date) VALUES (?, ?, ?, GETDATE())";
+
+        try (Connection connection = db.connect();
+             PreparedStatement orderStmt = connection.prepareStatement(insertOrderQuery)) {
+
+            // Set the parameters for the order
+            orderStmt.setInt(1, customerId);
+            orderStmt.setString(2, orderDetails);
+            orderStmt.setDouble(3, totalPrice);
+
+            // Execute the insertion
+            int rowsAffected = orderStmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Order placed successfully for Customer ID: " + customerId);
+            } else {
+                System.out.println("Failed to place the order for Customer ID: " + customerId);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("SQL Error: Could not place order!");
+            e.printStackTrace();
+        }
+    }
+
+    public void cancelOrder(int orderId) {
+        String deleteOrderQuery = "DELETE FROM Orders WHERE id = ?";
+
+        try (Connection connection = db.connect();
+             PreparedStatement cancelStmt = connection.prepareStatement(deleteOrderQuery)) {
+
+            // Set the ID parameter
+            cancelStmt.setInt(1, orderId);
+
+            // Execute the deletion
+            int rowsAffected = cancelStmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Order canceled successfully with ID: " + orderId);
+            } else {
+                System.out.println("No order found with ID: " + orderId);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("SQL Error: Could not cancel the order!");
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
 
 }
