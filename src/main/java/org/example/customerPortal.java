@@ -50,6 +50,7 @@ public class customerPortal {
             System.out.println("Invalid choice. Please try again.");
             return;
         }
+        customerMenu();
 
     }
     void register() {
@@ -66,29 +67,31 @@ public class customerPortal {
     }
 
     void customerMenu() {
-        System.out.println("Welcome " + customer.getName() + "!");
-        System.out.println("Please select an option:");
-        System.out.println("1. View products");
-        System.out.println("2. View orders");
-        System.out.println("3. Logout");
-        try {
-            int choice = Integer.parseInt(System.console().readLine());
-            switch (choice) {
-                case 1:
-                  //  viewProducts();
-                    break;
-                case 2:
-                  //  viewOrders();
-                    break;
-                case 3:
+        while (true){
+            Main.flush();
+            System.out.println("Welcome " + customer.getName() + "!");
+            System.out.println("Please select an option:");
+            System.out.println("1. View orders");
+            System.out.println("0. Logout");
+            try {
+                int choice = Integer.parseInt(System.console().readLine());
+                if  (choice == 0) {
                     return;
-                default:
+                } else if (choice == 1) {
+                    viewOrders();
+                } else {
                     System.out.println("Invalid choice. Please try again.");
                     return;
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid choice. Please try again.");
+                return;
             }
-        } catch (Exception e) {
-            System.out.println("Invalid choice. Please try again.");
-            return;
         }
+
+    }
+    void viewOrders() {
+
+
     }
 }

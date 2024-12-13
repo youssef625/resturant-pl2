@@ -54,6 +54,10 @@ public class Main {
                 case 2:
 
                 case 3:
+                    flush();
+                    scanner = null;
+                    customerPortal customer = new customerPortal();
+                    break;
 
                 case 4:
                     return;

@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class Customer extends users {
     public Customer(users user) {
@@ -47,7 +48,22 @@ public class Customer extends users {
         type = userTypes.customer;
     }
 
-
+    public List<order> listOrders() {
+        List<order> orders = null;
+        String query = "SELECT * FROM orders WHERE user_id = ?";
+        try (Connection connection = db.connect();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            ResultSet results = statement.executeQuery();
+            while (results.next()) {
+                order o = new order(results.getInt("id"), null);
+               // System.out.println("Order ID: " + orderId);
+            }
+        } catch (SQLException e) {
+            return null;
+        }
+        return orders;
+    }
 
 
 

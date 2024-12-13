@@ -63,13 +63,12 @@ public class Employee extends users implements CustomersManagement {
     }
 
     @Override
-    public void searchCustomers(String name) {
+    public List<users> searchCustomers(String name) {
         // Not implemented yet
+        return null;
     }
 
-    public void makepayment() {
-        // Not implemented yet
-    }
+
 
     void checkOffers() {
         // Not implemented yet
