@@ -4,10 +4,9 @@ import java.util.List;
 
 public interface CustomersManagement {
     boolean addCustomers(users users);
-    void deleteCustomers(int id);
-    void cancelOrder(int orderId);
-    void makeOrder(int customerId, String orderDetails, double totalPrice);
-    void updateCustomers(int id, String name);
+    boolean deleteCustomers(int id);
+    boolean updateCustomers(users customer) ;
     List<users> listCustomers();
     List<users> searchCustomers(String name);
+    users getcustomer(int id);
 }

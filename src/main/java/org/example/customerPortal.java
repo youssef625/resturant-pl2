@@ -1,11 +1,9 @@
 package org.example;
 
-import classes.Customer;
-import classes.adminstrator;
-import classes.userTypes;
-import classes.users;
+import classes.*;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 public class customerPortal {
     Customer customer = null;
@@ -91,6 +89,45 @@ public class customerPortal {
 
     }
     void viewOrders() {
+        while (true){
+            Main.flush();
+            List<order> orders = customer.listOrders();
+            System.out.printf("%-10s %-20s %-10s %-10s%n", "Order ID", "Total Price", "Employee ID", "payment Status");
+            System.out.println("-------------------------------------------------------------");
+            if(orders.isEmpty()){
+                System.out.println("No orders found.");
+                return;}
+            for (order _order : orders) {
+                System.out.printf("%-10s %-20s %-10s %-10s%n", _order.getOrderId(), _order.getTotalPrice(), _order.getEmpId(), _order.isPaid());
+            }
+            System.out.println("-------------------------------------------------------------");
+            System.out.println("choose an order to pay for or -1 to exit:");
+
+            try {
+                int orderID = Integer.parseInt(System.console().readLine());
+                order searchOrder = order.findOrder(orders, orderID);
+                if (searchOrder == null) {
+                    System.out.println("Invalid choice. Please try again.");
+                    continue;
+
+                }else if (searchOrder.isPaid()) {
+                    System.out.println("Order already paid for.");
+                    continue;
+                } else if (orderID == -1) {
+                    break;
+
+                }
+
+                customer.makepayment(orderID);
+
+            } catch (Exception e) {
+                System.out.println("Invalid choice. Please try again.");
+                return;
+            }
+
+
+        }
+
 
 
     }

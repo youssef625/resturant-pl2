@@ -59,80 +59,15 @@ public class Main {
                     // Add admin functionality here if needed
                     break;
 
-                case 2: // Employee role
+                case 2:
                     flush();
-                    if (employee == null) { // Check if Employee is already created
-                        employee = new Employee();
-                    }
-                    while (true) {
-                        // Display the employee options
-                        System.out.println("Employee Options:");
-                        System.out.println("1. Add Customer");
-                        System.out.println("2. Delete Customer");
-                        System.out.println("3. Update Customer");
-                        System.out.println("4. List Customers");
-                        System.out.println("5. Search Customers");
-                        System.out.println("6. Record Payment");
-                        System.out.println("7. Check Offers");
-                        System.out.println("8. Back to Main Menu");
-                        int empChoice;
-
-                        try {
-                            // Read the employee's choice
-                            empChoice = scanner.nextInt();
-                            scanner.nextLine(); // Clear the input buffer
-                        } catch (Exception e) {
-                            System.out.println("Invalid choice");
-                            scanner.nextLine(); // Clear invalid input
-                            continue;
-                        }
-
-                        switch (empChoice) {
-                            case 1:
-                                // Add functionality to add a customer
-                                System.out.println("Adding a customer...");
-                                break;
-                            case 2:
-                                // Add functionality to delete a customer
-                                System.out.println("Deleting a customer...");
-                                break;
-                            case 3:
-                                // Add functionality to update a customer
-                                System.out.println("Updating a customer...");
-                                break;
-                            case 4:
-                                // List customers
-                                System.out.println("Listing customers...");
-                                break;
-                            case 5:
-                                // Search customers
-                                System.out.println("Searching for customers...");
-                                break;
-                            case 6:
-                                // Record a payment
-                                System.out.println("Recording payment...");
-                                break;
-                            case 7:
-                                // Check offers
-                                employee.checkOffers();
-                                break;
-                            case 8:
-                                // Go back to the main menu
-                                System.out.println("Returning to the main menu...");
-                                break;
-                            default:
-                                System.out.println("Invalid choice. Please try again.");
-                        }
-
-                        if (empChoice == 8) {
-                            break;
-                        }
-                    }
+                    employeePortal employeePortal = new employeePortal();
                     break;
+
 
                 case 3:
                     flush();
-                    System.out.println("Customer role not implemented yet.");
+                    customerPortal customerPortal = new customerPortal();
                     break;
 
                 case 4:

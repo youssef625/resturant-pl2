@@ -396,8 +396,10 @@ public class adminPortal {
     }
     void createReport(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("1- Generate report");
+        System.out.println("1- employee");
+        System.out.println("2- customer");
         System.out.println("0- Exit");
+
         int choice;
         try {
             choice = scanner.nextInt();
@@ -405,12 +407,19 @@ public class adminPortal {
             System.out.println("Invalid choice");
             return;
         }
-        switch (choice) {
-            case 1:
-                //admin.generateReport();
-                break;
-            case 0:
-                return;
+        userTypes type = choice == 1 ? userTypes.employee : userTypes.customer;
+        if (choice == 0)
+            return;
+        System.out.println(type.name() + ": ");
+        for (users user : admin.listEmpsORCustomers(type)) {
+            if (user.getType() == type) {
+                System.out.println(user.getId() + "- " + user.getName());
+            }
         }
+
+        System.out.println("Enter "+type.name()+" ID: ");
+        int id = scanner.nextInt();
+        System.out.println(admin.generateReport( type, id));
+
     }
 }

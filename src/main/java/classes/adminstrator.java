@@ -168,12 +168,14 @@ public class adminstrator extends users implements MealsManagement, EmployeesMan
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, _user.getName());
             statement.setString(2, _user.getType().name());
-            statement.setString(3, _user.getPassword());
+            statement.setString(3, login.hashPassword(_user.getPassword()));
             statement.executeUpdate();
             System.out.println("Employee added: " + _user.getName());
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
         }
 
         return false;
@@ -253,7 +255,63 @@ public class adminstrator extends users implements MealsManagement, EmployeesMan
             return users;
     }
 
-    public void generateReport(userTypes type , int id) {
+    public List<users> listEmpsORCustomers(userTypes type) {
+        List<users> users = new ArrayList<>();
+        String query = "SELECT id, name, type FROM users WHERE type = ?";
+        try (Connection connection = db.connect();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ) {
+            statement.setString(1, type.name());
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                users user = new users();
+                user.setId(resultSet.getInt("id"));
+                user.setName(resultSet.getString("name"));
+                user.setType(userTypes.valueOf( resultSet.getString("type")));
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();}
+        return users;
+    }
+
+    public String generateReport(userTypes type , int id) {
+        String report ;
+        if (type == userTypes.employee) {
+            System.out.println("Admin report:");
+            String query = "SELECT count(*) as count FROM orders WHERE empId = ? and isPaid = 1";
+            try (Connection connection = db.connect();
+                 PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, id);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        report = "Employee " + id + " has " + resultSet.getInt("count") + " paid orders";
+                        return report;
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+        else {
+            System.out.println("customer report:");
+            String query = "SELECT count(*) as count FROM orders WHERE cutomerId = ? and isPaid = 1";
+            try (Connection connection = db.connect();
+                 PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, id);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        report = "customer " + id + " has " + resultSet.getInt("count") + " paid orders";
+                        return report;
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return "No report found";
 
     }
 }

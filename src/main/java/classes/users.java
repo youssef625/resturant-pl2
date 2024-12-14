@@ -20,8 +20,9 @@ public class users {
         return id;
     }
     public boolean changeMyPassword(String _password )  {
+        String hashed = null;
         try {
-            String hashed = login.hashPassword(_password);
+            hashed = login.hashPassword(_password);
         }catch (NoSuchAlgorithmException e){
             e.printStackTrace();
             return false;
@@ -29,8 +30,10 @@ public class users {
         String query = "UPDATE users SET password = ? WHERE id = ?";
         try (Connection connection = db.connect();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, _password);
+            statement.setString(1, hashed);
             statement.setInt(2, id);
+            statement.executeUpdate();
+
         }catch (Exception e){
             e.printStackTrace();
             return false;
@@ -49,6 +52,7 @@ public class users {
             statement.setInt(2, this.id);
             statement.executeUpdate();
             System.out.println("Name updated: " + _name);
+            name = _name;
             return true;
         } catch (SQLException e) {
             System.out.println("Error: " + e.getMessage());

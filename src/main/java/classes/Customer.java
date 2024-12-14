@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Customer extends users {
@@ -49,21 +50,41 @@ public class Customer extends users {
     }
 
     public List<order> listOrders() {
-        List<order> orders = null;
-        String query = "SELECT * FROM orders WHERE user_id = ?";
+        List<order> orders = new ArrayList<order>();
+        String query = "SELECT * FROM orders WHERE cutomerId = ?";
         try (Connection connection = db.connect();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
-            ResultSet results = statement.executeQuery();
-            while (results.next()) {
-                order o = new order(results.getInt("id"), null);
-               // System.out.println("Order ID: " + orderId);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+
+                order _order = new order();
+                _order.setOrderId(resultSet.getInt("orderId"));
+                _order.setCutomerId(resultSet.getInt("cutomerId"));
+                _order.setTotalPrice(resultSet.getFloat("totalPrice"));
+                _order.setEmpId(resultSet.getInt("empId"));
+                _order.setPaid(resultSet.getBoolean("isPaid"));
+                orders.add(_order);
             }
         } catch (SQLException e) {
             return null;
         }
         return orders;
     }
+
+    public void makepayment(int orderID) {
+        String query = "UPDATE orders SET is_paid = 1 WHERE order_id = ?";
+        try (Connection connection = db.connect();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, orderID);
+            statement.executeUpdate();
+            System.out.println("Payment made for order: " + orderID);
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+
 
 
 
