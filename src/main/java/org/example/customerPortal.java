@@ -4,19 +4,22 @@ import classes.*;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Scanner;
 
 public class customerPortal {
     Customer customer = null;
 
-    void customerLogin()   {
+    boolean customerLogin()   {
         try {
             users user = new users();
-            login.isAuthentic(user , userTypes.customer);
+            if(!login.isAuthentic(user , userTypes.customer))
+                return false;
             customer = new Customer(user);
         }catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            return;
+            return false;
         }
+        return true;
 
 
     }
@@ -32,10 +35,13 @@ public class customerPortal {
             int choice = Integer.parseInt(System.console().readLine());
             switch (choice) {
                 case 1:
-                    customerLogin();
+
+                    if(!customerLogin())
+                        return;
                     break;
                 case 2:
-                    register();
+                    if(!register())
+                        return;
                     break;
                 case 3:
                     return;
@@ -51,7 +57,7 @@ public class customerPortal {
         customerMenu();
 
     }
-    void register() {
+    boolean register() {
         System.out.println("Enter your userName: ");
         String name = System.console().readLine();
         System.out.println("Enter your password: ");
@@ -59,9 +65,12 @@ public class customerPortal {
         try {
             String hashed = login.hashPassword(password);
             customer = new Customer(name, hashed);
+            return true;
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+            return false;
         }
+
     }
 
     void customerMenu() {
@@ -70,6 +79,7 @@ public class customerPortal {
             System.out.println("Welcome " + customer.getName() + "!");
             System.out.println("Please select an option:");
             System.out.println("1. View orders");
+            System.out.println("2. Edit profile");
             System.out.println("0. Logout");
             try {
                 int choice = Integer.parseInt(System.console().readLine());
@@ -77,6 +87,8 @@ public class customerPortal {
                     return;
                 } else if (choice == 1) {
                     viewOrders();
+                } else if (choice == 2) {
+                    editProfile();
                 } else {
                     System.out.println("Invalid choice. Please try again.");
                     return;
@@ -131,4 +143,43 @@ public class customerPortal {
 
 
     }
+
+    void editProfile() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("1- Change name");
+        System.out.println("2- Change password");
+        System.out.println("0- Exit");
+
+        int choice;
+        try {
+            choice = scanner.nextInt();
+        } catch (Exception var5) {
+            System.out.println("Invalid choice");
+            return;
+        }
+
+        switch (choice) {
+            case 0:
+                return;
+            case 1:
+                System.out.println("Enter new name: ");
+                String name = System.console().readLine();
+                if (this.customer.changeMyName(name)) {
+                    System.out.println("Name updated successfully");
+                } else {
+                    System.out.println("Failed to update name");
+                }
+                break;
+            case 2:
+                System.out.println("Enter new password: ");
+                String password = System.console().readLine();
+                if (this.customer.changeMyPassword(password)) {
+                    System.out.println("Password updated successfully");
+                } else {
+                    System.out.println("Failed to update password");
+                }
+        }
+
+    }
+
 }

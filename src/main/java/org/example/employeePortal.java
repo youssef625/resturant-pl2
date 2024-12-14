@@ -12,10 +12,13 @@ import java.util.Scanner;
 
 public class employeePortal {
    Employee employee = null;
-    void employeeLogin() throws NoSuchAlgorithmException {
+    boolean employeeLogin() throws NoSuchAlgorithmException {
         users user = new users();
-        login.isAuthentic(user , userTypes.employee);
+
+        if(!login.isAuthentic(user , userTypes.employee))
+            return false;
         employee = new Employee(user);
+        return true;
 
     }
     public void employeeMenu(){
@@ -25,6 +28,7 @@ public class employeePortal {
             System.out.println("Welcome " + employee.getName());
             System.out.println("1. orders Management");
             System.out.println("2. Customers Management");
+            System.out.println("3. Edit Profile");
             System.out.println("0. Exit");
             try {
                 choice = scanner.nextInt();
@@ -40,8 +44,14 @@ public class employeePortal {
             else if (choice == 2){
                 customersManagement();
             }
+            else if (choice == 3){
+                editProfile();
+            }
             else if(choice == 0){
                 break;
+            }
+            else {
+                System.out.println("Invalid choice");
             }
 
         }
@@ -49,7 +59,8 @@ public class employeePortal {
 
     public employeePortal(){
         try {
-            employeeLogin();
+            if(!employeeLogin())
+                return;
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             return;
@@ -380,6 +391,44 @@ public class employeePortal {
                     return;
             }
         }
+    }
+
+    void editProfile() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("1- Change name");
+        System.out.println("2- Change password");
+        System.out.println("0- Exit");
+
+        int choice;
+        try {
+            choice = scanner.nextInt();
+        } catch (Exception var5) {
+            System.out.println("Invalid choice");
+            return;
+        }
+
+        switch (choice) {
+            case 0:
+                return;
+            case 1:
+                System.out.println("Enter new name: ");
+                String name = System.console().readLine();
+                if (this.employee.changeMyName(name)) {
+                    System.out.println("Name updated successfully");
+                } else {
+                    System.out.println("Failed to update name");
+                }
+                break;
+            case 2:
+                System.out.println("Enter new password: ");
+                String password = System.console().readLine();
+                if (this.employee.changeMyPassword(password)) {
+                    System.out.println("Password updated successfully");
+                } else {
+                    System.out.println("Failed to update password");
+                }
+        }
+
     }
 
 

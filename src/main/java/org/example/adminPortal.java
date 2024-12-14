@@ -12,10 +12,12 @@ public class adminPortal {
     adminstrator admin = null;
 
 
-    void adminLogin() throws NoSuchAlgorithmException {
+    boolean adminLogin() throws NoSuchAlgorithmException {
         users user = new users();
-        login.isAuthentic(user , userTypes.admin);
+        if(!login.isAuthentic(user , userTypes.admin))
+            return false;
         admin = new adminstrator(user);
+        return true;
 
     }
     public void adminMenu(){
@@ -63,7 +65,8 @@ public class adminPortal {
 
     public adminPortal(){
         try {
-            adminLogin();
+            if(!adminLogin())
+                return;
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             return;
