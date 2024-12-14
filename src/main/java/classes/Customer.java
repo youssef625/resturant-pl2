@@ -73,7 +73,7 @@ public class Customer extends users {
     }
 
     public void makepayment(int orderID) {
-        String query = "UPDATE orders SET is_paid = 1 WHERE order_id = ?";
+        String query = "UPDATE orders SET isPaid = 1 WHERE orderId = ?";
         try (Connection connection = db.connect();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, orderID);

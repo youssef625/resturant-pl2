@@ -279,13 +279,13 @@ public class adminstrator extends users implements MealsManagement, EmployeesMan
         String report ;
         if (type == userTypes.employee) {
             System.out.println("Admin report:");
-            String query = "SELECT count(*) as count FROM orders WHERE empId = ? and isPaid = 1";
+            String query = "SELECT count(*) as count , name FROM orders left join users on id = empId WHERE empId =  ? and isPaid = 1 group by name ";
             try (Connection connection = db.connect();
                  PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setInt(1, id);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
-                        report = "Employee " + id + " has " + resultSet.getInt("count") + " paid orders";
+                        report = "Employee " + resultSet.getString("name") + " has " + resultSet.getInt("count") + " paid orders";
                         return report;
                     }
                 }
@@ -297,13 +297,13 @@ public class adminstrator extends users implements MealsManagement, EmployeesMan
         }
         else {
             System.out.println("customer report:");
-            String query = "SELECT count(*) as count FROM orders WHERE cutomerId = ? and isPaid = 1";
+            String query = "SELECT count(*) as count , name FROM orders left join users on id = cutomerId WHERE cutomerId =  ? and isPaid = 1 group by name";
             try (Connection connection = db.connect();
                  PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setInt(1, id);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
-                        report = "customer " + id + " has " + resultSet.getInt("count") + " paid orders";
+                        report = "customer " + resultSet.getString("name") + " has " + resultSet.getInt("count") + " paid orders";
                         return report;
                     }
                 }

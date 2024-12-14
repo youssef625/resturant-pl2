@@ -117,6 +117,9 @@ public class customerPortal {
 
             try {
                 int orderID = Integer.parseInt(System.console().readLine());
+                if (orderID == -1) {
+                    break;
+                }
                 order searchOrder = order.findOrder(orders, orderID);
                 if (searchOrder == null) {
                     System.out.println("Invalid choice. Please try again.");

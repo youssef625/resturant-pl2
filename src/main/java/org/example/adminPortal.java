@@ -420,9 +420,12 @@ public class adminPortal {
             }
         }
 
+        System.out.println("-------------------------------------------------------------");
         System.out.println("Enter "+type.name()+" ID: ");
         int id = scanner.nextInt();
+        System.out.println("-------------------------------------------------------------");
         System.out.println(admin.generateReport( type, id));
+        System.out.println("-------------------------------------------------------------");
 
     }
 }

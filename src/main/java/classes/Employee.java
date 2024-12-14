@@ -157,7 +157,7 @@ public class Employee extends users implements CustomersManagement {
     }
 
     public List<order> getOrders() {
-        String fetchOrdersQuery = "SELECT orderId,cutomerId,totalPrice,empId , isPaid, users.name FROM Orders " +
+        String fetchOrdersQuery = "SELECT orderId,cutomerId,totalPrice,empId , isPaid, users.name as name FROM Orders " +
                 "join users on users.id = Orders.cutomerId " +
                 " where  empId = ? ";
         List<order> ordersList = new ArrayList<>();
@@ -172,7 +172,7 @@ public class Employee extends users implements CustomersManagement {
             while (resultSet.next()) {
                 order _order = new order();
                 _order.setOrderId(resultSet.getInt("orderId"));
-                _order.setCutomerId(resultSet.getInt("cutomerId"));
+                _order.setCustomerName(resultSet.getString("name"));
                 _order.setTotalPrice(resultSet.getFloat("totalPrice"));
                 _order.setEmpId(resultSet.getInt("empId"));
                 _order.setPaid(resultSet.getBoolean("isPaid"));

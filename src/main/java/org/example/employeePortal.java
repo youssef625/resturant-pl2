@@ -131,18 +131,23 @@ public class employeePortal {
     }
 
     private void updateOrder(int orderId) {
+        if (!order.isOrderExist(orderId)){
+            System.out.println("Order not found");
+            return;
+        }
+
         Scanner scanner = new Scanner(System.in);
         while (true){
             List<meal> mealsInOrder = employee.getOrderMeals(orderId);
             try {
 
-                System.out.printf("%-10s %-20s %-10s %-10s%n", "Meal ID", "Meal Name", "Price","Discount", "Quantity");
+                System.out.printf("%-10s %-20s %-10s %-10s %-10s%n", "Meal ID", "Meal Name", "Price","Discount", "Quantity");
                 System.out.println("------------------------------------------------------------");
                 if (mealsInOrder.isEmpty()) {
                     System.out.println("No meals found in this order");
                 }
                 for (meal meal : mealsInOrder) {
-                    System.out.printf("%-10s %-20s %-10s %-10s%n", meal.mealId, meal.mealName, meal.mealPrice,meal.discount+"%", meal.quantity);
+                    System.out.printf("%-10s %-20s %-10s %-10s %-10s%n", meal.mealId, meal.mealName, meal.mealPrice,meal.discount+"%", meal.quantity);
                 }
                 System.out.println("------------------------------------------------------------");
                 System.out.println("1. Add meal");
@@ -279,12 +284,12 @@ public class employeePortal {
             } else {
                 System.out.println("Searched customers for " + searchedcustomers);
             }
-            System.out.printf("%-10s %-20s %-10s%n", "customer ID", "Name");
+            System.out.printf("%-10s %-20s%n", "customer ID", "Name");
             System.out.println("-------------------------------------------------------------");
             if (customers.isEmpty())
                 System.out.println("No customers found");
             for (users customer : customers) {
-                System.out.printf("%-10d %-20s %-10s%n", customer.getId(), customer.getName());
+                System.out.printf("%-10s %-20s%n", customer.getId(), customer.getName());
             }
             System.out.println("-------------------------------------------------------------");
             System.out.println("1- Add customer");

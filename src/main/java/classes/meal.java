@@ -18,6 +18,6 @@ public class meal {
         mealPrice = price;
     }
     public float getFinalPrice(){
-        return mealPrice * (discount/100);
+        return mealPrice * ((100-discount)/100);
     }
 }

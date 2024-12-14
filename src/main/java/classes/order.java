@@ -128,6 +128,20 @@ public class order {
         }
 
     }
+
+    public static boolean isOrderExist(int orderId) {
+        String query = "SELECT * FROM orders WHERE orderId = ?";
+        try (Connection connection = db.connect();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, orderId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
 
 
